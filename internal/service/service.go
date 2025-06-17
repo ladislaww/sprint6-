@@ -1,31 +1,22 @@
 package service
 
 import (
-	"os"
+	
 	"strings"
 
 	"github.com/Yandex-Practicum/go1fl-sprint6-final/pkg/morse"
 )
 
-func FileContent(path string) (string, error) {
-	content, err := os.ReadFile(path)
-
-	if err != nil {
-		return "", err
-	}
-
+func ConvertMorseOrText(data string) string {
+	
 	var result string
-	text := string(content)
 
-	if strings.ContainsAny(strings.ToLower(text), "абвгдеёжзийклмнопрстуфхцчшщъыьэюя") {
-		result = morse.ToMorse(text)
+	if strings.ContainsAny(strings.ToLower(data), " абвгдеёжзийклмнопрстуфхцчшщъыьэюя") {
+		result = morse.ToMorse(data)
 
 	} else {
-		result = morse.ToText(text)
+		result = morse.ToText(data)
 	}
 
-	if err := os.WriteFile(path, []byte(result), 0755); err != nil {
-		return "", err
-	}
-	return path, nil
+	return result
 }
