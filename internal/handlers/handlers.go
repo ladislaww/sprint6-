@@ -4,17 +4,19 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
+	"time"
 
 	"github.com/Yandex-Practicum/go1fl-sprint6-final/internal/service"
 )
 
 
-func htmlHandler(w http.ResponseWriter, r *http.Request) {
+func HtmlHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w,r, "index.html")
 }
 
 
-func uploadHandler(w http.ResponseWriter, r *http.Request) {
+func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	
 	err := r.ParseMultipartForm(10 << 20) 
 	if err != nil {
@@ -22,7 +24,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	file, _, err := r.FormFile("myFile") 
+	file, handler, err := r.FormFile("myFile") 
 	if err != nil{
 		http.Error(w, "ошибка при получении файла", http.StatusInternalServerError)
 		return
@@ -37,30 +39,29 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	converted := service.ConvertMorseOrText(string(data))
 
-	outFile, err := os.Create("taskFile.txt") 
+	timestamp :=time.Now().UTC().Format("20060102_150405")
+	ext := filepath.Ext(handler.Filename)
+	if ext == "" {
+		ext = ".txt"
+	}
+	
+	fileName := timestamp + ext
+
+
+	outputFile, err := os.Create(fileName) 
 	if err != nil{
 		http.Error(w, "ошибка создания системного файла", http.StatusInternalServerError)
 		return
 	}
-	defer outFile.Close()
+	defer outputFile.Close()
 	
-	_, err = outFile.Write([]byte(converted))
+	_, err = outputFile.Write([]byte(converted))
 	if err != nil{
 		http.Error(w, "ошибка записи системного файла", http.StatusInternalServerError)
 		return
 	}
 
-
-
+	w.WriteHeader(http.StatusOK)
+	_,_ = w.Write([]byte(converted))
 }
-	/*	fileName := "index.html"
-
-	file, err := os.Open(fileName) 
-	if err != nil {
-		http.Error(w, "не удалось открыть файл", http.StatusInternalServerError)
-		return
-	}
-	defer file.Close()
-
- */
 
