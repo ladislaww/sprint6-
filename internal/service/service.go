@@ -7,12 +7,6 @@ import (
 	"github.com/Yandex-Practicum/go1fl-sprint6-final/pkg/morse"
 )
 
-
-
-
-
-
-
 func isMorse(s string) bool {
 	for _, ch := range s {
 		if ch != '.' && ch != '-' && ch != ' ' && ch != '\n' && ch != '\r' {
