@@ -20,7 +20,7 @@ func Router(log *log.Logger) *Server {
 	mux.HandleFunc("/upload", handlers.UploadHandler)
 
 	httpServer := &http.Server{
-		Addr: ";8080",
+		Addr: ":8080",
 		Handler: mux,
 		ErrorLog: log,
 		ReadTimeout: 5 * time.Second,
