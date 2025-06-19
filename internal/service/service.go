@@ -7,16 +7,29 @@ import (
 	"github.com/Yandex-Practicum/go1fl-sprint6-final/pkg/morse"
 )
 
+
+
+
+
+
+
+func isMorse(s string) bool {
+	for _, ch := range s {
+		if ch != '.' && ch != '-' && ch != ' ' && ch != '\n' && ch != '\r' {
+			return false
+		}
+	}
+	return true
+}
+
+
+
 func ConvertMorseOrText(data string) string {
 	
-	var result string
-
-	if strings.ContainsAny(strings.ToLower(data), " абвгдеёжзийклмнопрстуфхцчшщъыьэюя") {
-		result = morse.ToMorse(data)
-
-	} else {
-		result = morse.ToText(data)
-	}
-
-	return result
+	data = strings.TrimSpace(data)
+	
+	if isMorse(data){
+		return morse.ToText(data)
+	} 
+	return morse.ToMorse(data)
 }
